@@ -1,0 +1,18 @@
+sudo: required
+
+services:
+ - docker
+
+before_script:
+ - docker pull notriddle/ant
+
+script:
+ - wget http://download.nextag.com/apache/tomcat/tomcat-9/v9.0.0.M1/src/apache-tomcat-9.0.0.M1-src.tar.gz
+ - tar -xvf apache-tomcat-9.0.0.M1-src.tar.gz
+ - docker run -v "`pwd`/apache-tomcat-9.0.0.M1-src:/src" notriddle/ant
+ - docker build -t notriddle/tomcat .
+
+after_success:
+ - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+ - docker push notriddle/tomcat
+
